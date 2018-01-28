@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Redux watchers</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.6.2/css/bulma.min.css">
+</head>
+
+<body>
+    <div id="header"></div>
+    <div class="section">
+        <div id="cart"></div>
+    </div>
+    <div id="footer"></div>
+    <div class="section">
+        <div class="container">
+            <div class="field is-horizontal">
+                <div class="field-body">
+                    <div class="field">
+                        <button id="add-cart" class="button is-primary" type="button">ADD TO CART</button>
+                        <button id="del-cart" class="button is-danger" type="button">REMOVE FROM CART</button>
+                    </div>
+                </div>
+            </div>
+            <div class="field is-horizontal">
+                <div class="field-body">
+                    <div class="field has-addons">
+                        <div class="control">
+                            <input class="input header-text" type="text" placeholder="Header text">
+                        </div>
+                        <div class="control">
+                            <button class="button is-info" id="update-header">
+                                Update Header
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="field is-horizontal">
+                <div class="field-body">
+                    <div class="field has-addons">
+                        <div class="control">
+                            <input class="input footer-text" type="text" placeholder="Footer text">
+                        </div>
+                        <div class="control">
+                            <button class="button is-info" id="update-footer">
+                                Update Footer
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+        crossorigin="anonymous"></script>
+    <script src="./handlebars.runtime.min.js"></script>
+    <script src="./store.js"></script>
+    <script src="./templates.js"></script>
+    <script>
+        $('#add-cart').on('click', function () {
+            IQ.Store.store.dispatch({
+                type: 'ADD_CART_ITEM'
+            });
+        });
+
+        $('#del-cart').on('click', function () {
+            IQ.Store.store.dispatch({
+                type: 'REMOVE_CART_ITEM'
+            });
+        });
+
+        $('#update-footer').on('click', function () {
+            IQ.Store.store.dispatch({
+                type: 'UPDATE_FOOTER_TEXT',
+                payload: $('.footer-text').val()
+            });
+           
+        });
+
+        $('#update-header').on('click', function () {
+            IQ.Store.store.dispatch({
+                type: 'UPDATE_HEADER_TEXT',
+                payload: $('.header-text').val()
+            });
+           
+        });
+
+        IQ.Store.subscribe('cart.value', function (state) {
+            $('#cart').html(IQ.Templates['cart'](state));
+        });
+
+        IQ.Store.subscribe('header.value', function (state) {
+            $('#header').html(IQ.Templates['header'](state));
+        });
+
+        IQ.Store.subscribe('footer.value', function (state) {
+            $('#footer').html(IQ.Templates['footer'](state));
+        });
+
+        var storeData = IQ.Store.store.getState();
+        $('#header').html(IQ.Templates['header'](storeData));
+        $('#cart').html(IQ.Templates['cart'](storeData));
+        $('#footer').html(IQ.Templates['footer'](storeData));
+    </script>
+</body>
+
+</html>
